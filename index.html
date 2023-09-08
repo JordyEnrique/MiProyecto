@@ -1,0 +1,42 @@
+
+<script src="MiProyecto.py"></script>
+function inicializar() {
+  // Cargar el código Python
+  Python.loadModule("registro_personas");
+
+  // Crear un nuevo objeto del sistema de registro de personas
+  var sistema_registro_personas = new RegistroPersonas();
+
+  // Mostrar el formulario de registro
+  mostrarFormularioRegistro();
+}
+function mostrarFormularioRegistro() {
+  // Mostrar el formulario de registro
+  document.getElementById("formulario-registro").style.display = "block";
+}
+function procesarFormularioRegistro() {
+  // Obtener los datos del formulario
+  var nombre = document.getElementById("nombre").value;
+  var apellido = document.getElementById("apellido").value;
+  var cedula = document.getElementById("cedula").value;
+  var telefono = document.getElementById("telefono").value;
+  var correo = document.getElementById("correo").value;
+  var ciudad = document.getElementById("ciudad").value;
+  var movilidad = document.getElementById("movilidad").value;
+
+  // Registrar la persona
+  sistema_registro_personas.registrarPersona(nombre, apellido, cedula, telefono, correo, ciudad, movilidad);
+
+  // Limpiar el formulario
+  document.getElementById("nombre").value = "";
+  document.getElementById("apellido").value = "";
+  document.getElementById("cedula").value = "";
+  document.getElementById("telefono").value = "";
+  document.getElementById("correo").value = "";
+  document.getElementById("ciudad").value = "";
+  document.getElementById("movilidad").value = "";
+}
+function mostrarMensaje(mensaje) {
+  // Mostrar el mensaje
+  document.getElementById("mensaje").innerHTML = mensaje;
+}
