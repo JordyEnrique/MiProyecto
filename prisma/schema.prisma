@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  lastName    String
+  cedula      String?  @unique
+  phone       String?
+  country     String?
+  city        String?
+  profession  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  surveyResponses    SurveyResponse[]
+  campaignSignatures CampaignSignature[]
+  returnRegistrations ReturnRegistration[]
+  connectionPosts    ConnectionPost[]
+
+  @@map("users")
+}
+
+model Survey {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+
+  questions  Question[]
+  responses  SurveyResponse[]
+
+  @@map("surveys")
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  surveyId  String
+  text      String
+  type      String   // 'text', 'multiple', 'single', 'rating'
+  options   String?  // JSON string for options
+
+  survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model SurveyResponse {
+  id        String   @id @default(cuid())
+  surveyId  String
+  userId    String
+  answers   String   // JSON string of answers
+  createdAt DateTime @default(now())
+
+  survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([surveyId, userId])
+  @@map("survey_responses")
+}
+
+model Campaign {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  country        String
+  ministry       String
+  letterTemplate String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  signatures     CampaignSignature[]
+
+  @@map("campaigns")
+}
+
+model CampaignSignature {
+  id          String   @id @default(cuid())
+  campaignId  String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+  @@map("campaign_signatures")
+}
+
+model ReturnRegistration {
+  id          String   @id @default(cuid())
+  userId      String
+  destination String
+  timeline    String
+  skills      String
+  needs       String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("return_registrations")
+}
+
+model ConnectionPost {
+  id        String   @id @default(cuid())
+  userId    String
+  category  String   // 'knowledge', 'remesas', 'networking'
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("connection_posts")
+}
