@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/encuestas', label: 'Encuestas' },
   { href: '/aulas', label: 'Aulas Virtuales' },
+  { href: '/talentos', label: 'Talentos' },
   { href: '/incidencia', label: 'Incidencia' },
   { href: '/conexion', label: 'Conexión' },
   { href: '/retorno', label: 'Retorno' },
