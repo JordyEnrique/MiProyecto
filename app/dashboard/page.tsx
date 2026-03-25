@@ -67,7 +67,7 @@ export default function DashboardPage() {
       <div className="mb-10">
         <div className="venezuela-stripe w-24 h-1 mb-4" />
         <h1 className="text-4xl font-black text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-500 text-lg">Bienvenido a Mi Voto Cuenta — tu plataforma de la diáspora venezolana</p>
+        <p className="text-gray-500 text-lg">Bienvenido a Mi Voz Cuenta — tu plataforma de la diáspora venezolana</p>
       </div>
 
       {/* Quick Stats */}
@@ -76,7 +76,7 @@ export default function DashboardPage() {
           { label: 'Encuestas respondidas', value: '0', icon: '📋', change: 'Empieza a participar' },
           { label: 'Campañas firmadas', value: '0', icon: '✊', change: 'Tu voz importa' },
           { label: 'Posts compartidos', value: '0', icon: '🤝', change: 'Comparte tu experiencia' },
-          { label: 'Días en Mi Voto Cuenta', value: '1', icon: '⭐', change: 'Bienvenido' },
+          { label: 'Días en Mi Voz Cuenta', value: '1', icon: '⭐', change: 'Bienvenido' },
         ].map((stat, i) => (
           <div key={i} className="card p-5">
             <div className="flex items-start justify-between mb-3">
