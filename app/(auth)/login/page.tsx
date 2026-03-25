@@ -43,9 +43,9 @@ export default function LoginPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link href="/" className="flex justify-center items-center gap-3 mb-6">
-          <img src="/logo-icon.svg" alt="Mi Voz Cuenta" className="w-12 h-12" />
+          <img src="/logo-icon.svg" alt="Mi Voto Cuenta" className="w-12 h-12" />
           <div>
-            <span className="font-bold text-xl text-gray-900 block">Mi Voz Cuenta</span>
+            <span className="font-bold text-xl text-gray-900 block">Mi Voto Cuenta</span>
             <span className="text-gray-500 text-sm">Diáspora Venezolana</span>
           </div>
         </Link>
