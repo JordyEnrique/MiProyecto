@@ -74,7 +74,7 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-              Mi Cuenta
+              Mi Voto Cuenta
               <span className="block text-[#FFD200]">Diáspora Venezolana</span>
             </h1>
 
@@ -131,7 +131,7 @@ export default function HomePage() {
           <div className="text-center mb-14">
             <h2 className="section-title text-4xl">5 módulos, una comunidad</h2>
             <p className="section-subtitle max-w-2xl mx-auto">
-              Mi Cuenta te ofrece herramientas concretas para participar, incidir
+              Mi Voto Cuenta te ofrece herramientas concretas para participar, incidir
               y mantenerte conectado con Venezuela desde donde estés.
             </p>
           </div>
@@ -212,7 +212,7 @@ export default function HomePage() {
             <span className="block text-[#FFD200]">Únete hoy.</span>
           </h2>
           <p className="text-xl text-blue-200 mb-10 max-w-2xl mx-auto">
-            Más de 500,000 venezolanos ya son parte de Mi Cuenta.
+            Más de 500,000 venezolanos ya son parte de Mi Voto Cuenta.
             Juntos construimos un futuro mejor para Venezuela y su diáspora.
           </p>
           <Link href="/registro" className="btn-yellow text-lg px-10 py-4 shadow-xl">

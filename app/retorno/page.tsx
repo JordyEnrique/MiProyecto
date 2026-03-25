@@ -49,7 +49,7 @@ const testimonials = [
     name: 'Carlos A.',
     from: 'Regresó de Colombia',
     profession: 'Ingeniero',
-    text: 'Trabajé 3 años en Bogotá. Con los ahorros y las conexiones que hice a través de Mi Cuenta, pude abrir mi empresa en Maracaibo.',
+    text: 'Trabajé 3 años en Bogotá. Con los ahorros y las conexiones que hice a través de Mi Voto Cuenta, pude abrir mi empresa en Maracaibo.',
   },
 ]
 

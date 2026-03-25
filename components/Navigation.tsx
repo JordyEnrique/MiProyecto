@@ -26,11 +26,9 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-full bg-[#FFD200] flex items-center justify-center font-bold text-[#003DA5] text-sm group-hover:bg-yellow-300 transition-colors">
-              MC
-            </div>
+            <img src="/logo-icon.svg" alt="Mi Voto Cuenta" className="w-9 h-9 group-hover:opacity-90 transition-opacity" />
             <div>
-              <span className="font-bold text-lg leading-none block">Mi Cuenta</span>
+              <span className="font-bold text-lg leading-none block">Mi Voto Cuenta</span>
               <span className="text-blue-200 text-xs leading-none">Diáspora Venezolana</span>
             </div>
           </Link>

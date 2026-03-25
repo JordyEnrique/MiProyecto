@@ -3,12 +3,12 @@ import './globals.css'
 import Navigation from '@/components/Navigation'
 
 export const metadata: Metadata = {
-  title: 'Mi Cuenta - Plataforma de la Diáspora Venezolana',
+  title: 'Mi Voto Cuenta - Plataforma de la Diáspora Venezolana',
   description:
-    'Mi Cuenta es la plataforma digital que conecta a la diáspora venezolana alrededor del mundo. Participa en encuestas, campañas de incidencia, y mantén tu conexión con Venezuela.',
-  keywords: 'venezolanos, diáspora, Venezuela, migración, incidencia, encuestas',
+    'Mi Voto Cuenta es la plataforma digital que conecta a la diáspora venezolana alrededor del mundo. Participa en encuestas, campañas de incidencia, y mantén tu conexión con Venezuela.',
+  keywords: 'venezolanos, diáspora, Venezuela, migración, incidencia, encuestas, voto',
   openGraph: {
-    title: 'Mi Cuenta - Diáspora Venezolana',
+    title: 'Mi Voto Cuenta - Diáspora Venezolana',
     description: 'La plataforma de la diáspora venezolana',
     type: 'website',
   },
@@ -30,11 +30,9 @@ export default function RootLayout({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[#FFD200] flex items-center justify-center font-bold text-[#003DA5]">
-                    MC
-                  </div>
+                  <img src="/logo-icon.svg" alt="Mi Voto Cuenta" className="w-10 h-10" />
                   <div>
-                    <span className="font-bold text-xl block">Mi Cuenta</span>
+                    <span className="font-bold text-xl block">Mi Voto Cuenta</span>
                     <span className="text-blue-200 text-sm">Diáspora Venezolana</span>
                   </div>
                 </div>
@@ -66,7 +64,7 @@ export default function RootLayout({
 
             <div className="mt-8 pt-6 border-t border-blue-700 flex flex-col sm:flex-row justify-between items-center gap-3">
               <p className="text-blue-300 text-sm">
-                © 2024 Mi Cuenta. Todos los derechos reservados.
+                © 2024 Mi Voto Cuenta. Todos los derechos reservados.
               </p>
               <div className="flex items-center gap-2">
                 <span className="text-blue-300 text-sm">Hecho con</span>
