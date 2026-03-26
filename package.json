@@ -1,24 +1,17 @@
 {
-  "name": "mi-voz-cuenta",
+  "name": "betting-predictor",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "14.2.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@prisma/client": "^5.13.0",
-    "next-auth": "^4.24.7",
-    "bcryptjs": "^2.4.3"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "typescript": "^5.4.5",
@@ -27,8 +20,6 @@
     "postcss": "^8.4.38",
     "@types/node": "^20.12.7",
     "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
-    "@types/bcryptjs": "^2.4.6",
-    "prisma": "^5.13.0"
+    "@types/react-dom": "^18.3.0"
   }
 }
