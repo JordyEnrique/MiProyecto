@@ -11,9 +11,15 @@ interface Stats {
   totalWon: number
   totalLost: number
   openExposure: number
-  netPnl: number
+  netPnlBets: number
   winRate: number
-  roi: number
+  roiBets: number
+  // AI cost fields
+  totalPredictions: number
+  aiCostPerPrediction: number
+  totalAiCost: number
+  netPnlReal: number
+  roiReal: number
 }
 
 interface PortfolioStatsProps {
@@ -35,10 +41,11 @@ function StatBox({
 }
 
 export default function PortfolioStats({ stats, onSync, syncing }: PortfolioStatsProps) {
-  const pnlColor  = stats.netPnl >= 0 ? 'text-green-600' : 'text-red-500'
-  const roiColor  = stats.roi   >= 0 ? 'text-green-600' : 'text-red-500'
-  const modeLabel = stats.mode === 'real' ? '💰 Dinero Real' : '📄 Modo Prueba'
-  const modeBg    = stats.mode === 'real' ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
+  const pnlRealColor = stats.netPnlReal >= 0 ? 'text-green-600' : 'text-red-500'
+  const roiRealColor = stats.roiReal   >= 0 ? 'text-green-600' : 'text-red-500'
+  const roiBetsColor = stats.roiBets   >= 0 ? 'text-green-600' : 'text-red-500'
+  const modeLabel    = stats.mode === 'real' ? '💰 Dinero Real' : '📄 Modo Prueba'
+  const modeBg       = stats.mode === 'real' ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
 
   return (
     <div className="space-y-4">
@@ -62,19 +69,19 @@ export default function PortfolioStats({ stats, onSync, syncing }: PortfolioStat
         )}
       </div>
 
-      {/* Stats grid */}
+      {/* Main PnL — real bottom line */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatBox
-          label="PnL Neto"
-          value={`${stats.netPnl >= 0 ? '+' : ''}$${stats.netPnl.toFixed(2)}`}
-          sub="ganancias – pérdidas"
-          color={pnlColor}
+          label="PnL Real (con IA)"
+          value={`${stats.netPnlReal >= 0 ? '+' : ''}$${stats.netPnlReal.toFixed(2)}`}
+          sub="apuestas − costo IA"
+          color={pnlRealColor}
         />
         <StatBox
-          label="ROI"
-          value={`${stats.roi >= 0 ? '+' : ''}${stats.roi.toFixed(1)}%`}
-          sub="sobre capital apostado"
-          color={roiColor}
+          label="ROI Real"
+          value={`${stats.roiReal >= 0 ? '+' : ''}${stats.roiReal.toFixed(1)}%`}
+          sub="sobre total invertido"
+          color={roiRealColor}
         />
         <StatBox
           label="Tasa de aciertos"
@@ -89,11 +96,35 @@ export default function PortfolioStats({ stats, onSync, syncing }: PortfolioStat
         />
       </div>
 
+      {/* AI cost breakdown */}
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+        <p className="text-xs font-semibold text-purple-700 mb-2">💸 Desglose costo IA (Claude)</p>
+        <div className="grid grid-cols-3 gap-3">
+          <StatBox
+            label="Predicciones generadas"
+            value={String(stats.totalPredictions)}
+            sub={`× $${stats.aiCostPerPrediction.toFixed(2)} c/u`}
+          />
+          <StatBox
+            label="Gasto total en IA"
+            value={`$${stats.totalAiCost.toFixed(2)}`}
+            sub="costo acumulado"
+            color="text-purple-700"
+          />
+          <StatBox
+            label="ROI solo apuestas"
+            value={`${stats.roiBets >= 0 ? '+' : ''}${stats.roiBets.toFixed(1)}%`}
+            sub="sin descontar IA"
+            color={roiBetsColor}
+          />
+        </div>
+      </div>
+
       {/* Secondary stats */}
       <div className="grid grid-cols-3 gap-3">
         <StatBox label="Total apostado" value={`$${stats.totalWagered.toFixed(2)}`} sub={`${stats.totalBets} apuestas`} />
-        <StatBox label="Total ganado"   value={`$${stats.totalWon.toFixed(2)}`}    color="text-green-600" />
-        <StatBox label="Total perdido"  value={`$${stats.totalLost.toFixed(2)}`}   color="text-red-500" />
+        <StatBox label="Total ganado"   value={`$${stats.totalWon.toFixed(2)}`}     color="text-green-600" />
+        <StatBox label="Total perdido"  value={`$${stats.totalLost.toFixed(2)}`}    color="text-red-500" />
       </div>
     </div>
   )

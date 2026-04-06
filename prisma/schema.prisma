@@ -136,10 +136,11 @@ model PredictorSettings {
   userId         String   @unique
   mode           String   @default("paper")   // "paper" | "real"
   paperBalance   Float    @default(1000.0)
-  maxBetPct      Float    @default(5.0)        // max % of balance per bet
-  autoBet        Boolean  @default(false)
-  minConfidence  Float    @default(0.65)       // min AI confidence to auto-bet
-  polyApiKey     String?
+  maxBetPct          Float    @default(5.0)        // max % of balance per bet
+  autoBet            Boolean  @default(false)
+  minConfidence      Float    @default(0.65)       // min AI confidence to auto-bet
+  aiCostPerPrediction Float   @default(0.10)       // estimated USD cost per Claude prediction
+  polyApiKey         String?
   polyApiSecret  String?
   polyPassphrase String?
   polyAddress    String?

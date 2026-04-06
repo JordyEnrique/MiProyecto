@@ -9,6 +9,7 @@ interface Settings {
   maxBetPct: number
   autoBet: boolean
   minConfidence: number
+  aiCostPerPrediction: number
   polyApiKey: string
   polyApiSecret: string
   polyPassphrase: string
@@ -17,15 +18,16 @@ interface Settings {
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings>({
-    mode:          'paper',
-    paperBalance:  1000,
-    maxBetPct:     5,
-    autoBet:       false,
-    minConfidence: 0.65,
-    polyApiKey:    '',
-    polyApiSecret: '',
-    polyPassphrase:'',
-    polyAddress:   '',
+    mode:                'paper',
+    paperBalance:        1000,
+    maxBetPct:           5,
+    autoBet:             false,
+    minConfidence:       0.65,
+    aiCostPerPrediction: 0.10,
+    polyApiKey:          '',
+    polyApiSecret:       '',
+    polyPassphrase:      '',
+    polyAddress:         '',
   })
   const [loading,  setLoading]  = useState(true)
   const [saving,   setSaving]   = useState(false)
@@ -259,6 +261,49 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
+
+        {/* AI cost */}
+        <div className="card">
+          <h2 className="text-lg font-bold text-gray-900 mb-1">💸 Costo por predicción IA</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Se usa para calcular el <strong>ROI real</strong> en tu portfolio, descontando el gasto en Claude.
+          </p>
+          <div>
+            <label className="label-field">
+              Costo estimado por predicción (USD)
+            </label>
+            <div className="flex items-center gap-3 mt-1">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={settings.aiCostPerPrediction}
+                onChange={e => handleChange('aiCostPerPrediction', Number(e.target.value))}
+                className="input-field w-32"
+              />
+              <span className="text-sm text-gray-500">USD / predicción</span>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {[0.05, 0.10, 0.15, 0.20].map(v => (
+                <button
+                  key={v}
+                  onClick={() => handleChange('aiCostPerPrediction', v)}
+                  className={`text-xs px-2 py-1 rounded border transition-colors ${
+                    settings.aiCostPerPrediction === v
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-blue-300'
+                  }`}
+                >
+                  ${v.toFixed(2)}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              Referencia: Claude Opus 4.6 cuesta ~$0.05–$0.20 por predicción según la complejidad del mercado.
+              El valor exacto lo puedes ver en <strong>console.anthropic.com → Usage</strong>.
+            </p>
+          </div>
+        </div>
 
         {/* AI info */}
         <div className="card bg-purple-50 border-purple-200">

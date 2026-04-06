@@ -31,9 +31,14 @@ interface PortfolioData {
     totalWon: number
     totalLost: number
     openExposure: number
-    netPnl: number
+    netPnlBets: number
     winRate: number
-    roi: number
+    roiBets: number
+    totalPredictions: number
+    aiCostPerPrediction: number
+    totalAiCost: number
+    netPnlReal: number
+    roiReal: number
   }
   recentBets: BetOrder[]
   recentPredictions: Parameters<typeof PredictionCard>[0]['prediction'][]
