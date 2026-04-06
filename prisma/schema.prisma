@@ -24,10 +24,13 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  surveyResponses    SurveyResponse[]
-  campaignSignatures CampaignSignature[]
+  surveyResponses     SurveyResponse[]
+  campaignSignatures  CampaignSignature[]
   returnRegistrations ReturnRegistration[]
-  connectionPosts    ConnectionPost[]
+  connectionPosts     ConnectionPost[]
+  predictorSettings   PredictorSettings?
+  marketPredictions   MarketPrediction[]
+  betOrders           BetOrder[]
 
   @@map("users")
 }
@@ -124,4 +127,74 @@ model ConnectionPost {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("connection_posts")
+}
+
+// ---- Predictor / Betting Tool ----
+
+model PredictorSettings {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  mode           String   @default("paper")   // "paper" | "real"
+  paperBalance   Float    @default(1000.0)
+  maxBetPct      Float    @default(5.0)        // max % of balance per bet
+  autoBet        Boolean  @default(false)
+  minConfidence  Float    @default(0.65)       // min AI confidence to auto-bet
+  polyApiKey     String?
+  polyApiSecret  String?
+  polyPassphrase String?
+  polyAddress    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("predictor_settings")
+}
+
+model MarketPrediction {
+  id                 String   @id @default(cuid())
+  userId             String
+  marketId           String
+  marketSlug         String
+  question           String
+  category           String   @default("other")
+  outcomes           String   // JSON: ["Yes", "No"]
+  currentOdds        String   // JSON: {"Yes": 0.65, "No": 0.35}
+  prediction         String   // predicted winning outcome
+  confidence         Float    // 0.0 - 1.0
+  reasoning          String
+  suggestedBetSize   Float
+  status             String   @default("pending") // pending | won | lost | void
+  resolvedOutcome    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  betOrders          BetOrder[]
+
+  @@map("market_predictions")
+}
+
+model BetOrder {
+  id           String   @id @default(cuid())
+  userId       String
+  predictionId String?
+  marketId     String
+  marketSlug   String
+  question     String
+  outcome      String   // which outcome was bet on
+  amount       Float    // USDC amount wagered
+  price        Float    // price at bet time (0-1), implied probability
+  potentialWin Float    // amount to receive if win
+  mode         String   // "paper" | "real"
+  status       String   @default("open") // open | won | lost | void | cancelled
+  externalId   String?  // Polymarket order ID (for real bets)
+  resolvedAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prediction   MarketPrediction? @relation(fields: [predictionId], references: [id])
+
+  @@map("bet_orders")
 }
