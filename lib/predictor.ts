@@ -3,14 +3,23 @@
  *
  * Uses Claude claude-opus-4-6 with adaptive thinking to analyze Polymarket
  * prediction markets and generate high-confidence betting recommendations.
+ *
+ * Falls back to demo mode (mock predictions) when ANTHROPIC_API_KEY is not set.
  */
 
 import Anthropic from '@anthropic-ai/sdk'
 import { PolyMarket, buildOddsMap } from './polymarket'
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const API_KEY = process.env.ANTHROPIC_API_KEY
+
+/** Returns true when no real API key is configured */
+export function isDemoMode(): boolean {
+  return !API_KEY || API_KEY.startsWith('sk-ant-api03-PEGA') || API_KEY.trim() === ''
+}
+
+const client = isDemoMode()
+  ? null
+  : new Anthropic({ apiKey: API_KEY })
 
 export interface PredictionResult {
   prediction: string       // the predicted winning outcome
@@ -20,6 +29,48 @@ export interface PredictionResult {
   oddsAtPrediction: Record<string, number>
   edge: number             // estimated edge over market (our prob - market prob)
 }
+
+// ---------------------------------------------------------------------------
+// Demo / mock prediction (no API key required)
+// ---------------------------------------------------------------------------
+
+const DEMO_REASONINGS = [
+  (q: string, outcome: string, pct: number) =>
+    `[MODO DEMO — predicción simulada]\n\nMercado analizado: "${q}"\n\nBasándonos en las probabilidades actuales del mercado, el outcome "${outcome}" cotiza al ${pct.toFixed(1)}%. Un análisis preliminar sugiere que el mercado podría estar subestimando ligeramente esta opción.\n\nFactores considerados:\n• Tendencia histórica de mercados similares\n• Volumen y liquidez actuales\n• Sesgo típico de los participantes en este tipo de eventos\n\nEsta es una predicción de DEMOSTRACIÓN. Activa tu clave de Anthropic en Ajustes para obtener análisis reales con Claude Opus 4.6 y pensamiento adaptativo.`,
+  (q: string, outcome: string, pct: number) =>
+    `[MODO DEMO — predicción simulada]\n\nPregunta: "${q}"\n\nEl mercado asigna ${pct.toFixed(1)}% de probabilidad a "${outcome}". Nuestro modelo de demo detecta un posible edge positivo del ~3-5% basado en patrones estadísticos básicos.\n\nNota: Este análisis es completamente simulado para que puedas explorar la interfaz antes de activar la IA real. Con Claude Opus 4.6 el análisis incluye razonamiento profundo sobre contexto actual, noticias y tendencias del mercado.`,
+]
+
+function mockPrediction(
+  market: PolyMarket,
+  balance: number,
+  maxBetPct: number,
+): PredictionResult {
+  const odds = buildOddsMap(market)
+
+  // Pick the outcome closest to 50% (most interesting to bet on)
+  const entries = Object.entries(odds)
+  const sorted  = entries.sort((a, b) => Math.abs(a[1] - 0.5) - Math.abs(b[1] - 0.5))
+  const [prediction, marketPrice] = sorted[0]
+
+  // Simulate a small edge: our "estimated" probability is market + 4%
+  const edge        = 0.04
+  const confidence  = Math.min(0.82, marketPrice + edge)
+  // Quarter-Kelly: f = (edge / (1 - marketPrice)) * 0.25
+  const kellPct     = marketPrice < 1
+    ? Math.min(maxBetPct, ((edge / (1 - marketPrice)) * 0.25 * 100))
+    : 0
+  const suggestedBetSize = (balance * kellPct) / 100
+
+  const reasoningFn = DEMO_REASONINGS[Math.floor(Math.random() * DEMO_REASONINGS.length)]
+  const reasoning   = reasoningFn(market.question, prediction, marketPrice * 100)
+
+  return { prediction, confidence, reasoning, suggestedBetSize, oddsAtPrediction: odds, edge }
+}
+
+// ---------------------------------------------------------------------------
+// Real prediction with Claude
+// ---------------------------------------------------------------------------
 
 /**
  * Generate an AI prediction for a Polymarket market.
@@ -33,6 +84,11 @@ export async function predictMarket(
   balance: number,
   maxBetPct: number = 5
 ): Promise<PredictionResult> {
+  // Fall back to mock if no API key is configured
+  if (isDemoMode() || !client) {
+    return mockPrediction(market, balance, maxBetPct)
+  }
+
   const odds = buildOddsMap(market)
   const oddsStr = Object.entries(odds)
     .map(([k, v]) => `  • ${k}: ${(v * 100).toFixed(1)}%`)

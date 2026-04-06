@@ -32,13 +32,18 @@ export default function PredictorPage() {
     market: PolyMarket; outcome?: string
   } | null>(null)
 
+  const [demoMode, setDemoMode]           = useState(false)
   const [notifications, setNotifications] = useState<{ id: number; msg: string; type: 'success' | 'error' }[]>([])
 
-  // Load settings
+  // Load settings and demo mode status
   useEffect(() => {
     fetch('/api/predictor/settings')
       .then(r => r.json())
       .then(data => setSettings(data))
+      .catch(() => null)
+    fetch('/api/predictor/status')
+      .then(r => r.json())
+      .then(data => setDemoMode(data.demoMode ?? false))
       .catch(() => null)
   }, [])
 
@@ -98,7 +103,8 @@ export default function PredictorPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Error al predecir')
 
-      notify(data.message ?? `✅ Predicción generada: ${data.result?.prediction} (${((data.result?.confidence ?? 0) * 100).toFixed(0)}% confianza)`)
+      const demoTag = demoMode ? ' [DEMO]' : ''
+      notify(data.message ?? `✅ Predicción generada${demoTag}: ${data.result?.prediction} (${((data.result?.confidence ?? 0) * 100).toFixed(0)}% confianza)`)
       loadPortfolio()
     } catch (err) {
       notify(err instanceof Error ? err.message : 'Error al generar predicción', 'error')
@@ -187,6 +193,25 @@ export default function PredictorPage() {
           )}
         </div>
       </div>
+
+      {/* Demo mode banner */}
+      {demoMode && (
+        <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <p className="font-semibold text-amber-800">🧪 Modo Demo activo</p>
+            <p className="text-sm text-amber-700 mt-0.5">
+              Las predicciones son <strong>simuladas</strong> — puedes explorar toda la herramienta sin gastar créditos.
+              Cuando quieras predicciones reales con Claude IA, agrega tu <code className="bg-amber-100 px-1 rounded">ANTHROPIC_API_KEY</code> en el archivo <code className="bg-amber-100 px-1 rounded">.env</code>.
+            </p>
+          </div>
+          <Link
+            href="/predictor/settings"
+            className="shrink-0 text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            ⚙️ Configurar IA
+          </Link>
+        </div>
+      )}
 
       {/* Portfolio summary */}
       {stats && !loadingPortfolio && (
